@@ -345,6 +345,14 @@ su -u postgres psql
 \d
 \q
 
+### start hive
+hive
+create database TEST;
+use TEST;
+create table testing (name varchar(20));
+insert into testing values ('testing db');
+
+
 ################ SPARK SETUP ##################
 ## spark-env.sh
 vim /opt/spark3/conf/spark-env.sh
