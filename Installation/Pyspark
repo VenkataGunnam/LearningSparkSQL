@@ -265,16 +265,40 @@ jps
 2. start-dfs.sh
 3. start-yarn.sh
 
+##### POSTGRES SQL SETUP ######
+### install postgres
+sudo apt-get install postgresql
+### set password to postgres
+sudo passwd postgres
+###To start the service, type 
+sudo service postgresql start
+###To conntect to postgres, type 
+sudo -u postgres psql
+\q
+### Switch users to postgres by typing 
+su - postgres
+### psql
 
+### create user hive in postgres window
+$ sudo -u postgres createuser <username>
+### create database metastore in pg window
+sudo -u postgres createdb <dbname>
+Giving the user a password
+
+$ sudo -u postgres psql
+psql=# alter user <username> with encrypted password '<password>';
+Granting privileges on database
+
+psql=# grant all privileges on database <dbname> to <username> ; 
 
 
 ###########   Hive Set up #####
 ###hive-site.xml : Global Configuration File for Hive
-/opt/hive/conf/hive-site.xml
+vim /opt/hive/conf/hive-site.xml
 <configuration>
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:postgresql://localhost:6432/metastore</value>
+    <value>jdbc:postgresql://localhost:5432/metastore</value>
     <description>JDBC Driver Connection for PostgrSQL</description>
   </property>
  
@@ -297,7 +321,8 @@ jps
   </property>
 </configuration>
 
-### Update /opt/hive/conf/hive-site.xml with below property.
+### Update  /opt/hive/conf/hive-site.xml with below property.
+vim /opt/hive/conf/hive-site.xml 
   <property>
     <name>hive.metastore.schema.verification</name>
     <value>false</value>
@@ -315,17 +340,14 @@ sudo mv postgresql-42.2.24.jar /opt/hive/lib/postgresql-42.2.24.jar
 schematool -dbType postgres -initSchema
 
 ### Validate Metadata Tables
-docker exec \
-    -it postgress_container \
-    psql -U postgres \
-    -d metastore
-	
+su -u postgres psql
+\c metastore
 \d
 \q
 
 ################ SPARK SETUP ##################
 ## spark-env.sh
-/opt/spark3/conf/spark-env.sh
+vim /opt/spark3/conf/spark-env.sh
 export HADOOP_HOME="/opt/hadoop"
 export HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
 
@@ -333,6 +355,7 @@ export HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
 
 #3.x
 Update /opt/spark3/conf/spark-defaults.conf with below properties.
+vim /opt/spark3/conf/spark-defaults.conf 
 spark.driver.extraJavaOptions     -Dderby.system.home=/tmp/derby/
 spark.sql.repl.eagerEval.enabled  true
 spark.master                      yarn
@@ -351,10 +374,8 @@ spark.yarn.jars                   hdfs:///spark3-jars/*.jar
 hdfs dfs -mkdir /spark3-jars
 hdfs dfs -mkdir /spark3-logs
 
-
 #3.x
 hdfs dfs -put /opt/spark3/jars/* /spark3-jars 
-
 
 #3.x
 sudo ln -s /opt/hive/conf/hive-site.xml /opt/spark3/conf/
@@ -389,9 +410,4 @@ mv /opt/spark3/bin/pyspark /opt/spark3/bin/pyspark3
 ### Validate the commands
 #3.x
 pyspark3 --master yarn
-
-
-
-
-
 
