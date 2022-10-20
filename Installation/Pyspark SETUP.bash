@@ -345,6 +345,14 @@ su -u postgres psql
 \d
 \q
 
+### start hive
+hive
+create database TEST;
+use TEST;
+create table testing (name varchar(20));
+insert into testing values ('testing db');
+
+
 ################ SPARK SETUP ##################
 ## spark-env.sh
 vim /opt/spark3/conf/spark-env.sh
@@ -408,9 +416,4 @@ mv /opt/spark3/bin/pyspark /opt/spark3/bin/pyspark3
 ### Validate the commands
 #3.x
 pyspark3 --master yarn
-
-
-
-
-
 
