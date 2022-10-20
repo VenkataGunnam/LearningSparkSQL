@@ -1,0 +1,53 @@
+###hive-site.xml : Global Configuration File for Hive
+/opt/hive/conf/hive-site.xml
+<configuration>
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:postgresql://localhost:6432/metastore</value>
+    <description>JDBC Driver Connection for PostgrSQL</description>
+  </property>
+ 
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.postgresql.Driver</value>
+    <description>PostgreSQL metastore driver class name</description>
+  </property>
+ 
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>hive</value>
+    <description>Database User Name</description>
+  </property>
+ 
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>sibaram12</value>
+    <description>Database User Password</description>
+  </property>
+</configuration>
+ 
+### Remove the conflicting Guava Files if present.
+rm /opt/hive/lib/guava-19.0.jar
+cp /opt/hadoop/share/hadoop/hdfs/lib/guava-27.0-jre.jar /opt/hive/lib/
+
+### Download a postgresql jar file and copy it to /opt/hive/lib/
+wget https://jdbc.postgresql.org/download/postgresql-42.2.24.jar
+sudo mv postgresql-42.2.24.jar /opt/hive/lib/postgresql-42.2.24.jar
+
+### Initialize Hive Metastore
+schematool -dbType postgres -initSchema
+
+### Validate Metadata Tables
+docker exec \
+    -it postgress_container \
+    psql -U postgres \
+    -d metastore
+	
+\d
+\q
+
+
+
+
+
+

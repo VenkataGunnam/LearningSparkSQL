@@ -1,0 +1,132 @@
+#####################
+ ## Docker Set up ##
+#####################
+### Update the existing list of packages.
+sudo apt update
+
+### Install few prerequisite packages.
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+### Add the GPG key for the official Docker repository to our host.
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+### Add the Docker repository to APT sources.
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+### Update the package database with the Docker packages from the newly added repo.
+sudo apt update
+
+### install the Docker policies
+apt-cache policy docker-ce
+
+### Install the docker
+sudo apt install docker-ce
+
+### Validate Docker Instalaltion.
+sudo systemctl status docker
+
+### Run docker commands with out sudo, we have to add the user to docker group. 
+sudo usermod -aG docker ${USER}
+
+Log out and login to validate.
+
+### Validate if user is added to docker group.
+id ${USER}
+docker images
+
+### To check whether you can access and download images from Docker Hub, type:
+docker run hello-world
+
+########################
+ ## PostgrSQL Set up ##
+########################
+### Now,Lets Set up Postgress Image in the Docker Container
+
+### Create the Container of type Postgress Image.
+docker create \
+    --name postgress_container \
+    -p 6432:5432 \
+    -e POSTGRES_PASSWORD=sibaram12 \
+    postgres
+	
+### Start the Container. 
+docker start postgress_container
+
+### Check if the container is running.
+docker logs -f postgress_container
+
+hit Control+c To come out.
+
+### We can validate if we are able to run postgress from docker.
+
+docker exec \
+    -it postgress_container \
+    psql -U postgres
+	
+### Createa database "metastore" for hive in postgress.
+CREATE DATABASE metastore;
+CREATE USER hive WITH ENCRYPTED PASSWORD 'sibaram12';
+GRANT ALL ON DATABASE metastore TO hive;	
+
+\l to list
+\q to exit postgress	
+
+### If you want to access postgress from host, we have to install a postgress client.
+sudo apt install postgresql-client -y
+
+psql -h localhost \
+    -p 6432 \
+    -d metastore \
+    -U hive \
+    -W 
+
+\d to list tables.
+\q to exit
+
+########################
+ ###    Hive Set up ###
+########################
+### Download Hive.
+wget https://mirrors.ocf.berkeley.edu/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
+
+### Untar Hive File.
+tar xzf apache-hive-3.1.2-bin.tar.gz
+
+### Archive Hive tar file.
+mv apache-hive-3.1.2-bin.tar.gz softwares
+
+### Set up Hive folder Structure.
+sudo mv -f apache-hive-3.1.2-bin /opt
+
+### Create a soft link.
+sudo ln -s /opt/apache-hive-3.1.2-bin /opt/hive
+
+### Update HIVE_HOME in the .profile File
+cd
+export HIVE_HOME=/opt/hive
+export PATH=$PATH:${HIVE_HOME}/bin
+
+### Execute Profile or exit the session and connect again
+source .profile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
