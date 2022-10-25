@@ -26,6 +26,27 @@ print("spark is \"easy\" to learn")
 
 x = "spark is easy \n learning spark is exciting \n and useful"
 print(x)
+z='venkat is here'
+print(z.capitalize())
+print(str.capitalize(z))
+# print(dir(str))
+print(str.lower(z))
+print(str.upper(z))
+print(str.center(z,20))
+print(z.zfill(20))
+print(str.count(z,'e'))
+print(z.count('e'))
+# in sql we call as trim , in python we call as strip
+print(str.strip('    kdisl   '))
+print(str.strip('00000STRIPED00000','0'))
+print(str.find(z,'e'))
+print(str.startswith(z,'v'))
+print(str.endswith(z,'df'))
+print(str.isdecimal('10'))
 
-print(dir(str))
+x = 'abc '.join(z)
+print(x)
 
+name = 'Hey guyz this is python programming from tutorial'
+print(str.split(name,' '))
+print(name.replace('tutorial', 'Tech Tutorial'))
