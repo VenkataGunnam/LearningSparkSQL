@@ -1,0 +1,78 @@
+################ SPARK SETUP ##################
+
+### Spark Website to Download. 
+https://downloads.apache.org/spark/
+
+### Download Spark3
+#wget https://ftp.wayne.edu/apache/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+wget https://downloads.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz
+
+tar xzf spark-3.2.1-bin-hadoop3.2.tgz
+mv spark-3.2.1-bin-hadoop3.2.tgz softwares
+sudo mv -f spark-3.2.1-bin-hadoop3.2 /opt
+sudo ln -s spark-3.2.1-bin-hadoop3.2 /opt/spark3
+export PATH=$PATH:/opt/spark3/bin
+
+## spark-env.sh
+vim /opt/spark3/conf/spark-env.sh
+export HADOOP_HOME="/opt/hadoop"
+export HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
+
+
+
+#3.x
+Update /opt/spark3/conf/spark-defaults.conf with below properties.
+vim /opt/spark3/conf/spark-defaults.conf 
+spark.driver.extraJavaOptions     -Dderby.system.home=/tmp/derby/
+spark.sql.repl.eagerEval.enabled  true
+spark.master                      yarn
+spark.eventLog.enabled            true
+spark.eventLog.dir                hdfs:///spark3-logs
+spark.history.provider            org.apache.spark.deploy.history.FsHistoryProvider
+spark.history.fs.logDirectory     hdfs:///spark3-logs
+spark.history.fs.update.interval  10s
+spark.history.ui.port             18080
+spark.yarn.historyServer.address  localhost:18080
+spark.yarn.jars                   hdfs:///spark3-jars/*.jar
+
+
+
+#3.x
+hdfs dfs -mkdir /spark3-jars
+hdfs dfs -mkdir /spark3-logs
+
+#3.x
+hdfs dfs -put /opt/spark3/jars/* /spark3-jars 
+
+#3.x
+sudo ln -s /opt/hive/conf/hive-site.xml /opt/spark3/conf/
+
+#3.x
+sudo wget https://jdbc.postgresql.org/download/postgresql-42.2.19.jar \
+    -O /opt/spark3/jars/postgresql-42.2.19.jar
+
+
+### Validate Spark using Python 
+
+#3.x
+/opt/spark3/bin/pyspark --master yarn --conf spark.ui.port=0
+spark.sql('SHOW databases').show()
+spark.sql('USE test')
+spark.sql('SELECT * FROM spark').show() 
+exit()
+
+### All the commands(spark-shell,pyspark,spark-submit) are avaiable in:
+/opt/spark2/bin
+/opt/spark3/bin
+
+
+### Distringuish these commands in spark2 and spark3
+#2.x
+mv /opt/spark2/bin/pyspark /opt/spark2/bin/pyspark2
+#3.x
+mv /opt/spark3/bin/pyspark /opt/spark3/bin/pyspark3
+
+### Validate the commands
+#3.x
+pyspark3 --master yarn
+

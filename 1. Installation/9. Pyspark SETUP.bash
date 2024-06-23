@@ -90,17 +90,20 @@ sudo service ssh start
 
 
 #### Download hadoop tar (Latest as of today).
-wget https://mirrors.gigenet.com/apache/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz
+#wget https://mirrors.gigenet.com/apache/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz
+wget https://mirrors.gigenet.com/apache/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz   
 
 ### Download Hive.
-wget https://mirrors.ocf.berkeley.edu/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
+#wget https://mirrors.ocf.berkeley.edu/apache/hive/hive-3.1.2/ apache-hive-3.1.2-bin.tar.gz
+wget https://mirrors.ocf.berkeley.edu/apache/hive/hive-4.0.0-beta-1/apache-hive-4.0.0-beta-1-bin.tar.gz
 
 
 ### Spark Website to Download. 
 https://downloads.apache.org/spark/
 
 ### Download Spark3
-wget https://ftp.wayne.edu/apache/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+#wget https://ftp.wayne.edu/apache/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+wget https://downloads.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz
 
 
 
@@ -122,14 +125,13 @@ mv spark-3.2.1-bin-hadoop3.2.tgz softwares
 
 ### Set up folder structure.
 sudo mv -f hadoop-3.3.1 /opt
-sudo mv -f apache-hive-3.1.2-bin /opt
+sudo mv -f apache-hive-3.1.3-bin /opt
 sudo mv -f spark-3.2.1-bin-hadoop3.2 /opt
 
 ### set up soft links
 sudo ln -s /opt/hadoop-3.3.1 /opt/hadoop
-sudo ln -s /opt/apache-hive-3.1.2-bin /opt/hive
+sudo ln -s /opt/apache-hive-3.1.3-bin /opt/hive
 sudo ln -s spark-3.2.1-bin-hadoop3.2 /opt/spark3
-
 
 
 ### Change the ownership to User.
@@ -344,7 +346,7 @@ sudo mv postgresql-42.2.24.jar /opt/hive/lib/postgresql-42.2.24.jar
 schematool -dbType postgres -initSchema
 
 ### Validate Metadata Tables
-su -u postgres psql
+sudo -u postgres psql
 \c metastore
 \d
 \q
